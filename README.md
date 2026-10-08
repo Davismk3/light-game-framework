@@ -6,6 +6,8 @@ I found myself struggling to scale game/other application projects, and also str
 
 As the developer, you should build your project in `app/`, and leave `engine/` largely untouched. 
 
+`README.md` was polished by AI. 
+
 ## Examples
 
 The following screenshots are taken from *Voxelverse*, a project of mine, which uses the same source code in `engine/` for its core.
