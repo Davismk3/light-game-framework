@@ -6,7 +6,7 @@ I found myself struggling to scale game/other application projects, and also str
 
 As the developer, you should build your project in `app/`, and leave `engine/` largely untouched. 
 
-`README.md` was polished by AI. Note, this does NOT mean AI was used in developing *Voxelverse*, which is a separate project from this repository.
+`README.md` was polished by AI. Note, this does NOT mean AI was used for any of the coding. 
 
 ## Examples
 
