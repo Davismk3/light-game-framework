@@ -12,18 +12,17 @@ As the developer, you should build your project in `app/`, and leave `engine/` l
 
 The following screenshots are taken from *Voxelverse*, a project of mine, which uses the same source code in `engine/` for its core. 
 
-Planet, moon, moon, and star:
+Earth-like Terrain:
 
-<img src="assets/cinematic_3.png" alt="1" width="800" height="500">
-Procedural rivers:
+<img src="assets/geology.png" alt="1" width="800" height="500">
+<img src="assets/meteorite.png" alt="1" width="800" height="500">
+<img src="assets/mountain_forest.png" alt="1" width="800" height="500">
 
-<img src="assets/cinematic_2.png" alt="2" width="800" height="500">
-Procedural mountains:
+Otherworldly Terrain:
 
-<img src="assets/cinematic_1.png" alt="3" width="800" height="500">
-Small moon's surface:
-
-<img src="assets/cinematic_5.png" alt="4" width="800" height="500">
+<img src="assets/moon.png" alt="1" width="800" height="500">
+<img src="assets/red_planet.png" alt="1" width="800" height="500">
+<img src="assets/blue_planet.png" alt="1" width="800" height="500">
 
 ## Requirements
 
