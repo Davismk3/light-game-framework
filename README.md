@@ -8,6 +8,10 @@ As the developer, you should build your project in `app/`, and leave `engine/` l
 
 All source code was designed and written manually without AI.
 
+$${\color{red}\text{Centered red warning text}}$$
+${\color{#D9534F}\text{Custom\ shade\ of\ red}}$
+
+
 ## Examples
 
 ### Available `app/`
