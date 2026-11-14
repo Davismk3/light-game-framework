@@ -1,6 +1,8 @@
 #include "input.hpp"
 
 namespace {
+    
+    // To GLFW Key: Returns the matching GLFW key code, or GLFW_KEY_UNKNOWN. key: any Key except COUNT.
     int toGlfwKey(Key key) {
         switch (key) {
             
@@ -71,6 +73,7 @@ namespace {
         return GLFW_KEY_UNKNOWN;
     }
 
+    // To GLFW Mouse Button: Returns the matching GLFW mouse button, or -1. button: any MouseButton except COUNT.
     int toGlfwMouseButton(MouseButton button) {
         switch (button) {
             case MouseButton::left: return GLFW_MOUSE_BUTTON_LEFT;
@@ -82,10 +85,12 @@ namespace {
     }
 }
 
+// Input Attach Window: Reads input from this window. Call before inputUpdate. window: already initialized.
 void Input::inputAttachWindow(Window& window) {
     m_window = window.windowNativeHandle();
 }
 
+// Input Update: Stores this frame's keys, mouse buttons, and mouse position, and the mouse delta since last frame. Call once per frame, after windowPollEvents.
 void Input::inputUpdate() {
     if (!m_window) return;
 
@@ -124,6 +129,7 @@ void Input::inputUpdate() {
     m_previous_mouse_v = m_mouse_v;
 }
 
+// Input Set Mouse Captured: Resets the mouse delta so the change does not cause a jump. captured: true hides the cursor and locks it to the window, false releases it.
 void Input::inputSetMouseCaptured(bool captured) {
     if (!m_window) return;
 
@@ -133,48 +139,58 @@ void Input::inputSetMouseCaptured(bool captured) {
     glfwSetInputMode(m_window, GLFW_CURSOR, captured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
+// Input Mouse Captured: True while the cursor is hidden and locked to the window.
 bool Input::inputMouseCaptured() const {
     return m_mouse_captured;
 }
 
+// Input Key Down: True every frame the key is held. key: any Key except COUNT.
 bool Input::inputKeyDown(Key key) const {
     int index = static_cast<int>(key);
     return m_current_keys[index];
 }
 
+// Input Key Pressed: True only on the frame the key goes down. key: any Key except COUNT.
 bool Input::inputKeyPressed(Key key) const {
     int index = static_cast<int>(key);
     return m_current_keys[index] && !m_previous_keys[index];
 }
 
+// Input Key Released: True only on the frame the key goes up. key: any Key except COUNT.
 bool Input::inputKeyReleased(Key key) const {
     int index = static_cast<int>(key);
     return !m_current_keys[index] && m_previous_keys[index];
 }
 
+// Input Mouse Down: True while the button is held. Reads GLFW directly instead of the stored state. mouse_button: any MouseButton except COUNT.
 bool Input::inputMouseDown(MouseButton mouse_button) const {
     if (!m_window) return false;
     return glfwGetMouseButton(m_window, toGlfwMouseButton(mouse_button)) == GLFW_PRESS;
 }
 
+// Input Mouse Pressed: True only on the frame the button goes down. mouse_button: any MouseButton except COUNT.
 bool Input::inputMousePressed(MouseButton mouse_button) const {
     int index = static_cast<int>(mouse_button);
     return m_current_mouse_buttons[index] && !m_previous_mouse_buttons[index];
 }
 
+// Input Mouse Released: True only on the frame the button goes up. mouse_button: any MouseButton except COUNT.
 bool Input::inputMouseReleased(MouseButton mouse_button) const {
     int index = static_cast<int>(mouse_button);
     return !m_current_mouse_buttons[index] && m_previous_mouse_buttons[index];
 }
 
+// Input Mouse Delta U: Returns the pixels the mouse moved right since last frame.
 float Input::inputMouseDeltaU() const {
     return m_mouse_delta_u;
 }
 
+// Input Mouse Delta V: Returns the pixels the mouse moved down since last frame.
 float Input::inputMouseDeltaV() const {
     return m_mouse_delta_v;
 }
 
+// Input Mouse Window U: Returns the mouse's horizontal position ∈ [-1.0f, 1.0f], from the left edge to the right edge.
 float Input::inputMouseWindowU() const {
     if (!m_window) return 0.0f;
 
@@ -190,6 +206,7 @@ float Input::inputMouseWindowU() const {
            - 1.0f;
 }
 
+// Input Mouse Window V: Returns the mouse's vertical position ∈ [-1.0f, 1.0f], from the bottom edge to the top edge.
 float Input::inputMouseWindowV() const {
     if (!m_window) return 0.0f;
 
@@ -205,6 +222,7 @@ float Input::inputMouseWindowV() const {
            static_cast<float>(height);
 }
 
+// Get Mouse Scroll: Returns the window's vertical scroll this frame. Call inputAttachWindow first.
 float Input::getMouseScroll() {
     Window* window = static_cast<Window*>(glfwGetWindowUserPointer(m_window));
     return window->scrollY;

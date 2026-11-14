@@ -10,9 +10,11 @@
 
 // Point [24 bytes]
 struct Point {
-    double x;
-    double y;
-    double z;
+
+    // Position
+    double x;  // x coordinate
+    double y;  // y coordinate
+    double z;  // z coordinate
 
     // Constructors
     Point() : x(0.0), y(0.0), z(0.0) {} // needed for other class constructions to work for some reason
@@ -26,8 +28,10 @@ struct Point {
 
 // Segment [48 bytes]
 struct Segment {
-    Point point_1;
-    Point point_2;
+
+    // Endpoints
+    Point point_1;  // start of the segment
+    Point point_2;  // end of the segment
 
     // Constructor
     Segment(Point point_1_, Point point_2_) { point_1 = point_1_; point_2 = point_2_; };
@@ -42,8 +46,10 @@ struct Segment {
 
 // Plane [48 bytes]
 struct Plane {
-    Point plane_point;
-    Vector3D plane_normal;
+
+    // Attributes
+    Point plane_point;  // any point on the plane
+    Vector3D plane_normal;  // points toward the kept side when clipping
 
     // Constructor
     Plane(Point plane_point_, Vector3D plane_normal_) { plane_point = plane_point_; plane_normal = plane_normal_; };
@@ -51,7 +57,9 @@ struct Plane {
 
 // Polygon (2D) [24 bytes Per Point]
 struct Polygon {
-    std::vector<Point> points;
+
+    // Points
+    std::vector<Point> points;  // in order around the border, all on one plane
     
     // Constructor
     Polygon(std::vector<Point> points_) { points = points_; };
@@ -68,7 +76,9 @@ struct Polygon {
 
 // Polyhedron (3D) [24 bytes Per Point Per Polygon]
 struct Polyhedron {
-    std::vector<Polygon> polygons;
+
+    // Faces
+    std::vector<Polygon> polygons;  // each face is a planar polygon
 
     // Default Constructor
     Polyhedron(std::vector<Polygon> polygons_) { polygons = polygons_; };

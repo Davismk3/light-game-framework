@@ -3,7 +3,7 @@
 void Application::initialize() {
     m_window.windowInitialize();
     m_timer.timerInitialize();
-    m_graphics_context.graphicsContextInitialize();
+    graphicsContextInitialize();
     m_input.inputAttachWindow(m_window);
 
     // Place Initialization Logic Here:
@@ -39,8 +39,8 @@ void Application::update(float& delta_time) {
 }
 
 void Application::render() {
-    m_graphics_context.beginFrame();
-    m_graphics_context.beginOverlayPass();
+    graphicsContextBeginFrame();
+    graphicsContextBeginOverlayPass();
 
     // Place Render Logic Here:
 
@@ -48,7 +48,7 @@ void Application::render() {
 
     // -
 
-    m_graphics_context.endFrame();
+    graphicsContextEndFrame();
 }
 
 void Application::shutdown() {

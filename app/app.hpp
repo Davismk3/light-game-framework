@@ -25,7 +25,6 @@ private:
 
     Window m_window;
     Input m_input;
-    GraphicsContext m_graphics_context;
     Timer m_timer;
 
     // Place Additional Logic Here:

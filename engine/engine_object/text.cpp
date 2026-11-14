@@ -2,7 +2,7 @@
 
 namespace {
 
-    // Get menu atlas texture UVs.
+    // Get Glyph Atlas Texture UVs: Returns the glyph's upper left pixel in the font atlas. glyph_id >= 1, a key of Glyph_To_GlyphId_Map or a special character's ID.
     GlyphAtlasPositionUV getGlyphAtlasTextureUVs(int glyph_id) {
         int index = glyph_id - 1;
 
@@ -12,7 +12,7 @@ namespace {
         return {u, v};
     }
 
-    // Return special char menu atlas integer.
+    // Special Chars: Returns the glyph ID for the special character after string[i], or 70 ('/') if there is none. string[i] is the special character's start, and i + 1 < string.size().
     int specialChars(char glyph, std::string& string, int i) {
         // special characters alter the appearance and shift the frame of on-screen text.
         // however, the string itself remains unaffected. the string "/1" is still stored as "/1".
@@ -51,7 +51,7 @@ namespace {
         else return 70;
     }
 
-    // Handle step sizes for variable length chars.
+    // Glyph Step: Returns how far to advance after this glyph, in window UV units. width: currently unused. style: only style.size is used. fix_step: true always returns the full 6 pixel step.
     float glyphStep(char glyph, float width, TextConfig style, bool fix_step) {
         auto stepPixel = [](int pixel, float width, TextConfig style) { return pixel * style.size / static_cast<float>(GLYPH_HEIGHT); };
         float step = stepPixel(6, width, style);
@@ -90,12 +90,14 @@ namespace {
     }
 }
 
+// Text: start_position: normalized to ([-1, 1], [-1, 1]) for screen. style: size, colors, background, opacity, and positioning. string: may contain special characters.
 Text::Text(Vector2F start_position, TextConfig style, std::string string) {
     m_start_position = start_position;
     m_config = style;
     m_string = string;
 }
 
+// Build Primitives: Returns a background quad followed by one quad per glyph. Also sets m_string_length and moves m_end_position forward.
 Primitive Text::buildPrimitives() {
     Primitive primitives;
     float width = m_config.size * static_cast<float>(GLYPH_WIDTH) / static_cast<float>(GLYPH_HEIGHT);
@@ -189,6 +191,7 @@ Primitive Text::buildPrimitives() {
     return final_primitive;
 }
 
+// Initialize Default: Sets up the typed text, empty placeholder text, and cursor from m_position and m_config. Call after setting both.
 void TextBox::initializeDefault() {
 
     // User's Text
@@ -231,15 +234,18 @@ void TextBox::initializeDefault() {
     m_textbox_cursor.m_string = "<";
 }
 
+// Add Char: char_to_add: any char. Chars missing from Glyph_To_GlyphId_Map draw as a placeholder.
 void TextBox::addChar(char char_to_add) {
     m_textbox_text.m_string.push_back(char_to_add);
 }
 
+// Subtract Char: Removes the last char, if there is one.
 void TextBox::subtractChar() {
     if (m_textbox_text.m_string.empty()) return;
     m_textbox_text.m_string.pop_back();
 }
 
+// Is Hover: Is the user's mouse hovering over this textbox? aspect > 0, the window's width / height.
 bool TextBox::isHover(const Input& input, float aspect) {
     float mouse_u = input.inputMouseWindowU() * aspect;
     float mouse_v = input.inputMouseWindowV();
@@ -255,6 +261,7 @@ bool TextBox::isHover(const Input& input, float aspect) {
            mouse_v <= v_max;
 }
 
+// Process Input: Activates the textbox on click, then adds or removes chars while it is active. aspect > 0, the window's width / height.
 void TextBox::processInput(const Input& input, float aspect) {
     m_text_changed = false;
     m_state_just_changed = false;
@@ -307,6 +314,7 @@ void TextBox::processInput(const Input& input, float aspect) {
 
 }
 
+// Build Box Primitives: Returns a single untextured quad covering this textbox.
 Primitive TextBox::buildBoxPrimitives() {
     const float left = m_position.u - m_config.width;
     const float right = m_position.u + m_config.width;
@@ -321,12 +329,14 @@ Primitive TextBox::buildBoxPrimitives() {
     );
 }
 
+// Build Text Primitives: Returns the typed text, or the placeholder while empty and inactive. Stores the chosen text in m_combined_current_text.
 Primitive TextBox::buildTextPrimitives() {
     if (m_textbox_text.m_string.empty() && m_state != TextBoxState::Active) m_combined_current_text = m_textbox_empty_text;
     else m_combined_current_text = m_textbox_text;
     return m_combined_current_text.buildPrimitives();
 }
 
+// Build Cursor Primitives: Returns the cursor at the end of the current text. Call after buildTextPrimitives.
 Primitive TextBox::buildCursorPrimitives() {
     if (m_textbox_text.m_string.empty()) m_textbox_cursor.m_start_position = m_textbox_text.m_start_position;
     else m_textbox_cursor.m_start_position = m_combined_current_text.m_end_position;

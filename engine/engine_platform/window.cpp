@@ -8,20 +8,17 @@ int& ref_to_var = var           reference to var, shorthand for (*ptr_to_var)
 */
 
 namespace {
+    
+    // GLFW Error Callback: Prints GLFW errors to std::cerr. error: GLFW's error code. description: GLFW's error message.
     static void glfwErrorCallback(int error, const char* description) {
         std::cerr << "[GLFW Error " << error << "] " << description << '\n';
     }
 
+    // Initialize GLFW: Initializes GLFW and requests an OpenGL 3.3 core context. Throws if GLFW fails to initialize.
     void initializeGLFW() {
         glfwSetErrorCallback(glfwErrorCallback);
 
         #ifdef __APPLE__
-        // GLFW's Cocoa backend chdir()s into Contents/Resources during
-        // glfwInit() if that folder exists (a legacy convention for
-        // resolving assets relative to it) - overriding this executable's
-        // own chdir-to-its-own-directory logic from main(), which every
-        // relative asset path in this codebase (engine/engine_assets/...,
-        // app/app_assets/...) actually depends on. Disable it.
         glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_FALSE);
         #endif
 
@@ -30,19 +27,23 @@ namespace {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        
         #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         #endif
     }
 
+    // Initialize GLAD: Loads the OpenGL functions. Call after the context is made current.
     void initializeGLAD() {
         gladLoadGL(glfwGetProcAddress);
     }
 
+    // Configure OpenGL: Enables depth testing.
     void configureOpenGL() {
         glEnable(GL_DEPTH_TEST);
     }
 
+    // Framebuffer Size Callback: Stores the new size on the Window and marks it resized. width, height: the new framebuffer size, in pixels.
     void frameBufferSizeCallback(GLFWwindow* m_window, int width, int height) {
         //glViewport(0, 0, width, height);
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(m_window));
@@ -51,6 +52,7 @@ namespace {
         window->m_framebuffer_resized = true;
     }
 
+    // Set Icon: Loads ICON_PATH as the window's icon, or prints a message if it fails to load. native_handle: a created window.
     void setIcon(GLFWwindow* native_handle) {
         GLFWimage images[1];
         images[0].pixels = stbi_load(ICON_PATH, &images[0].width, &images[0].height, 0, 4);
@@ -61,6 +63,7 @@ namespace {
         } else printf("app icon failed to load\n");
     }
 
+    // Scroll Callback: Adds the scroll to the Window's scrollX and scrollY. xoffset, yoffset: the scroll amounts from GLFW.
     void scrollCallback(GLFWwindow* m_window, double xoffset, double yoffset) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(m_window));
         window->scrollX += xoffset;
@@ -68,6 +71,7 @@ namespace {
     }
 }
 
+// Window Initialize: Creates the window and OpenGL context, loads GLAD, enables vsync, and sets the callbacks and icon. Throws if the window cannot be created.
 void Window::windowInitialize() {
     initializeGLFW();
 
@@ -103,15 +107,18 @@ void Window::windowInitialize() {
     setIcon(m_native_handle);
 }
 
+// Window Close: Asks the window to close. windowShouldClose returns true afterward.
 void Window::windowClose() {
     glfwSetWindowShouldClose(m_native_handle, true);
 }
 
+// Window Shutdown: Destroys the window and terminates GLFW.
 void Window::windowShutdown() {
     glfwDestroyWindow(m_native_handle);
     glfwTerminate();
 }
 
+// Window Poll Events: Resets this frame's scroll, then processes GLFW events. Call once per frame, before inputUpdate.
 void Window::windowPollEvents() {
     scrollX = 0.0;
     scrollY = 0.0;
@@ -119,18 +126,22 @@ void Window::windowPollEvents() {
     glfwPollEvents();
 }
 
+// Window Swap Buffers: Shows the frame that was just drawn.
 void Window::windowSwapBuffers() {
     glfwSwapBuffers(m_native_handle);
 }
 
+// Window Should Close: True once the user or windowClose has asked the window to close.
 bool Window::windowShouldClose() const {
     return glfwWindowShouldClose(m_native_handle);
 }
 
+// Window Native Handle: Returns the GLFW window, or nullptr before windowInitialize.
 GLFWwindow* Window::windowNativeHandle() const {
     return m_native_handle;
 }
 
+// Window Consume Framebuffer Resize: True once after each resize, then false until the next. extent: set to the new size, if there is one.
 bool Window::windowConsumeFramebufferResize(FramebufferExtent& extent) {
     if (!m_framebuffer_resized) return false;
 

@@ -9,7 +9,12 @@
 
 constexpr std::uint64_t DATA_MAX_ELEMENTS = 10'000'000;
 
-// Write binary data for numbers, booleans, and enums.
+/*Write Data:
+/ -
+T: a number, bool, or enum.
+out: a stream opened in binary mode.
+/ -
+Writes the value's raw bytes. Throws if the write fails.*/
 template<typename T>
 inline void writeData(std::ostream& out, const T& value) {
     static_assert(std::is_arithmetic_v<T> || std::is_enum_v<T>);
@@ -19,7 +24,12 @@ inline void writeData(std::ostream& out, const T& value) {
     if (!out) throw std::runtime_error("Failed to write data.");
 }
 
-// Read binary data for numbers, booleans, and enums.
+/* Read Data:
+/ -
+T: a number, bool, or enum.
+in: a stream opened in binary mode.
+/ -
+Reads the value's raw bytes. Throws if the read fails. */
 template<typename T>
 inline void readData(std::istream& in, T& value) {
     static_assert(std::is_arithmetic_v<T> || std::is_enum_v<T>);
@@ -29,7 +39,11 @@ inline void readData(std::istream& in, T& value) {
     if (!in) throw std::runtime_error("Failed to read save data");
 }
 
-// Write binary data for std::vector<T>.
+/* Write Data (std::vector<T>):
+/ -
+T: any type writeData accepts.
+/ -
+Writes the element count, then each element. */
 template<typename T>
 inline void writeData(std::ostream& out, const std::vector<T>& values) {
     const std::uint64_t count = static_cast<std::uint64_t>(values.size());
@@ -39,7 +53,11 @@ inline void writeData(std::ostream& out, const std::vector<T>& values) {
     for (const T& value : values) writeData(out, value);
 }
 
-// Read binary data for std::vector<T>.
+/* Read Data (std::vector<T>):
+/ -
+T: any type readData accepts.
+/ -
+Reads the element count, then each element. Throws if the count is above DATA_MAX_ELEMENTS. */
 template<typename T>
 inline void readData(std::istream& in, std::vector<T>& values) {
     std::uint64_t count;
@@ -57,19 +75,31 @@ inline void readData(std::istream& in, std::vector<T>& values) {
     }
 }
 
-// Write binary data for std::array<T>.
+/* Write Data (std::array<T, N>):
+/ -
+T: any type writeData accepts.
+/ -
+Writes each element. The size is not written, since N is fixed. */
 template<typename T, std::size_t N>
 inline void writeData(std::ostream& out, const std::array<T, N>& values) {
     for (const T& value : values) writeData(out, value);
 }
 
-// Read binary data for std::array<T>.
+/* Read Data (std::array<T, N>):
+/ -
+T: any type readData accepts.
+/ -
+Reads N elements. */
 template<typename T, std::size_t N>
 inline void readData(std::istream& in, std::array<T, N>& values) {
     for (T& value : values) readData(in, value);
 }
 
-// Write binary data for std::map<K, V>.
+/* Write Data (std::map<K, V>):
+/ -
+K, V: any types writeData accepts.
+/ -
+Writes the entry count, then each key and value. */
 template<typename K, typename V>
 inline void writeData(std::ostream& out, const std::map<K, V>& values) {
     const std::uint64_t count = static_cast<std::uint64_t>(values.size());
@@ -82,7 +112,11 @@ inline void writeData(std::ostream& out, const std::map<K, V>& values) {
     }
 }
 
-// Read binary data for std::map<K, V>.
+/* Read Data (std::map<K, V>):
+/ -
+K, V: any types readData accepts.
+/ -
+Reads the entry count, then each key and value. Throws if the count is above DATA_MAX_ELEMENTS. */
 template<typename K, typename V>
 void readData(std::istream& in, std::map<K, V>& values) {
     std::uint64_t count;
@@ -103,7 +137,11 @@ void readData(std::istream& in, std::map<K, V>& values) {
     }
 }
 
-// Write binary data for Vector3<T>.
+/* Write Data (Vector3<T>):
+/ -
+T: a number type.
+/ -
+Writes x, y, then z. */
 template<typename T>
 inline void writeData(std::ostream& out, const Vector3<T>& value) {
     writeData(out, value.x);
@@ -111,7 +149,11 @@ inline void writeData(std::ostream& out, const Vector3<T>& value) {
     writeData(out, value.z);
 }
 
-// Read binary data for Vector3<T>.
+/* Read Data (Vector3<T>):
+/ -
+T: a number type.
+/ -
+Reads x, y, then z. */
 template<typename T>
 inline void readData(std::istream& in, Vector3<T>& value) {
     readData(in, value.x);

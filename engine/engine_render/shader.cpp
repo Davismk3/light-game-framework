@@ -1,6 +1,7 @@
 #include "shader.hpp"
 
 namespace {
+    // Load Source: Returns the file's contents. Throws with the working directory and resolved path if the file cannot be opened. path: a file path, relative to the working directory or absolute.
     std::string loadSource(const std::filesystem::path& path) {
         std::ifstream file(path);
         if (!file) {
@@ -21,6 +22,7 @@ namespace {
     }
 }
 
+// Shader Initialize: Compiles and links the program. Throws if compiling or linking fails. vertex_path, fragment_path: GLSL source files, relative to the working directory or absolute.
 void Shader::shaderInitialize(const std::string& vertex_path, const std::string& fragment_path) {
     int success;
     char infoLog[512];
@@ -68,10 +70,12 @@ void Shader::shaderInitialize(const std::string& vertex_path, const std::string&
     glDeleteShader(fragment_shader);
 }
 
+// Shader Use: Makes this program the active one.
 void Shader::shaderUse() const {
     glUseProgram(m_shader_id);
 }
 
+// Shader Shutdown: Deletes the program, if any.
 void Shader::shaderShutdown() {
     if (m_shader_id != 0) {
         glDeleteProgram(m_shader_id);
@@ -79,22 +83,27 @@ void Shader::shaderShutdown() {
     }
 }
 
+// Shader Set Bool: name: a bool or int uniform in this program. Call shaderUse first.
 void Shader::shaderSetBool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(m_shader_id, name.c_str()), (int)value);
 }
 
+// Shader Set Int: name: an int or sampler uniform in this program. Call shaderUse first.
 void Shader::shaderSetInt(const std::string &name, int value) const { 
     glUniform1i(glGetUniformLocation(m_shader_id, name.c_str()), value); 
 }
 
+// Shader Set Float: name: a float uniform in this program. Call shaderUse first.
 void Shader::shaderSetFloat(const std::string &name, float value) const { 
     glUniform1f(glGetUniformLocation(m_shader_id, name.c_str()), value); 
 } 
 
+// Shader Set Vec3: name: a vec3 uniform in this program. Call shaderUse first.
 void Shader::shaderSetVec3(const std::string& name, float x, float y, float z) const {
     glUniform3f(glGetUniformLocation(m_shader_id, name.c_str()), x, y, z);
 }
 
+// Shader Set Mat4: The matrix is row-major, so it is transposed on upload. name: a mat4 uniform in this program. Call shaderUse first.
 void Shader::shaderSetMat4(const std::string& name, const Matrix4F& matrix) const {
     glUniformMatrix4fv(
         glGetUniformLocation(m_shader_id, name.c_str()),
@@ -104,10 +113,12 @@ void Shader::shaderSetMat4(const std::string& name, const Matrix4F& matrix) cons
     );
 }
 
+// Shader Id: Returns the OpenGL program id, 0 when not initialized.
 unsigned int Shader::shaderId() const {
     return m_shader_id;
 }
 
+// ~Shader: Deletes the program, if any.
 Shader::~Shader() {
     shaderShutdown();
 }

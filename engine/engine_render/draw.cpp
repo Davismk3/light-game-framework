@@ -1,5 +1,6 @@
 #include "draw.hpp"
 
+// Draw Mesh: Uses the shader and draws the whole mesh, with indices if it has any.
 void drawMesh(Mesh& mesh, Shader& shader) {
     shader.shaderUse();
     
@@ -14,7 +15,7 @@ void drawMesh(Mesh& mesh, Shader& shader) {
     glBindVertexArray(0);
 }
 
-// Separate Draw Calls On Single Mesh, Allows For Local Shader Differences Within Single Mesh
+// Draw Mesh Range: Separate draw calls on a single mesh, which allows local shader differences within the mesh. first_index + index_count <= the mesh's index count.
 void drawMeshRange(
     Mesh& mesh,
     Shader& shader,
@@ -34,6 +35,7 @@ void drawMeshRange(
     glBindVertexArray(0);
 }
 
+// Draw Mesh Range Efficient: Currently unused. index_size: how many draw calls, each starting 6 indices after the last. index_count: how many indices each draw call uses.
 void drawMeshRangeEfficient(
     Mesh& mesh,
     Shader& shader,
@@ -54,6 +56,7 @@ void drawMeshRangeEfficient(
     glBindVertexArray(0);
 }
 
+// Draw Mesh Range Exposed: Like drawMeshRange, but does not use the shader or bind the VAO. The caller must do both first. first_index + index_count <= the mesh's index count.
 void drawMeshRangeExposed(
     Mesh& mesh,
     Shader& shader,
@@ -66,6 +69,7 @@ void drawMeshRangeExposed(
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(index_count), GL_UNSIGNED_INT, reinterpret_cast<const void*>(byte_offset));
 }
 
+// Draw Clear: Clears the color and depth buffers to this color. red, green, blue, alpha ∈ [0.0f, 1.0f].
 void drawClear(float red, float green, float blue, float alpha) {
     glClearColor(red, green, blue, alpha);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

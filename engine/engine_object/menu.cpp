@@ -1,13 +1,16 @@
 #include "menu.hpp"
 
-void Menu::initialize(Texture* p_texture_) {
-    m_shader.shaderInitialize("engine/engine_assets/basic.vert", "engine/engine_assets/basic.frag");
+// Initialize: Loads the menu's shader and the font atlas. p_texture_: the texture used by texture quads, or nullptr if there are none. Now there is the ability to define the shader rather than it be fixed to the engine's default basic shader.
+void Menu::initialize(Texture* p_texture_, std::string vertex_path, std::string fragment_path) {
+    if (vertex_path == "NONE" || fragment_path == "NONE") m_shader.shaderInitialize("engine/engine_assets/shaders/basic.vert", "engine/engine_assets/shaders/basic.frag");
+    else m_shader.shaderInitialize(vertex_path, fragment_path);
     m_shader.shaderUse();
-    m_font_texture.textureLoad("engine/engine_assets/font.png");
+    m_font_texture.textureLoad("engine/engine_assets/textures/ui_atlas.png");
 
     p_texture = p_texture_;
 }
 
+// Build Mesh: Rebuilds the mesh from every object and records each object's index stride. Called by draw when the mesh is dirty.
 void Menu::buildMesh() {
     m_mesh.meshClear();
     for (std::vector<IndexStride>& index_strides : m_index_strides) index_strides.clear();
@@ -95,6 +98,7 @@ void Menu::buildMesh() {
     m_mesh_dirty = false;
 }
 
+// Process Input: Updates the buttons and textboxes from the user's input, and marks the mesh dirty if a textbox changed.
 void Menu::processInput(const Input& input) {
     m_mouse_u = input.inputMouseWindowU() * m_aspect;
     m_mouse_v = input.inputMouseWindowV();
@@ -121,6 +125,7 @@ void Menu::processInput(const Input& input) {
     }
 }
 
+// Update: Toggles the textbox cursor every m_cursor_flash_time seconds. delta_time >= 0, in seconds.
 void Menu::update(float delta_time) {
     m_time += delta_time;
     if (m_time >= m_cursor_flash_time) {
@@ -130,6 +135,7 @@ void Menu::update(float delta_time) {
     }
 }
 
+// Draw: Rebuilds the mesh if dirty, then draws panels, basic quads, texture quads, textured buttons, buttons, text, and textboxes, in that order.
 void Menu::draw() {
     if (m_mesh_dirty) buildMesh();
     m_shader.shaderUse();
@@ -298,45 +304,54 @@ void Menu::draw() {
     glBindVertexArray(0);
 }
 
+// Shutdown: Currently empty.
 void Menu::shutdown() {
 
 }
 
+// Add Button: Adds a button and marks the mesh dirty.
 void Menu::addButton(Button button) {
     m_buttons.push_back(button);
     m_mesh_dirty = true;
 }
 
+// Add Textured Button: Adds a textured button and marks the mesh dirty.
 void Menu::addTexturedButton(TexturedButton button) {
     m_texture_buttons.push_back(button);
     m_mesh_dirty = true;
 }
 
+// Add Text: Adds text and marks the mesh dirty.
 void Menu::addText(Text text) {
     m_texts.push_back(text);
     m_mesh_dirty = true;
 }
 
+// Add Text Box: Adds a textbox and marks the mesh dirty. Call initializeDefault on the textbox first.
 void Menu::addTextBox(TextBox textbox) {
     m_textboxes.push_back(textbox);
     m_mesh_dirty = true;
 }
 
+// Add Basic Quad: Adds an untextured quad and marks the mesh dirty.
 void Menu::addBasicQuad(MenuQuad menu_quad) {
     m_basic_quads.push_back(menu_quad);
     m_mesh_dirty = true;
 }
 
+// Add Texture Quad: Adds a quad textured with p_texture and marks the mesh dirty.
 void Menu::addTextureQuad(MenuQuad menu_quad) {
     m_texture_quads.push_back(menu_quad);
     m_mesh_dirty = true;
 }
 
+// Add Panel: Adds a panel and marks the mesh dirty.
 void Menu::addPanel(Panel panel) {
     m_panels.push_back(panel);
     m_mesh_dirty = true;
 }
 
+// Resize: projection: the menu's projection matrix for the new window size. aspect > 0, the window's width / height.
 void Menu::resize(Matrix4F projection, float aspect) {
     m_shader.shaderUse();
     m_shader.shaderSetMat4("u_projection", projection); 

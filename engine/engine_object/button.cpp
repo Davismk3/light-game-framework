@@ -1,10 +1,12 @@
 #include "button.hpp"
 
+// Button: position: the button's center, in window UV units. style: the button's size, colors, and opacity.
 Button::Button(Vector2F position, ButtonConfig style) {
     m_position = position;
     m_config = style;
 }
 
+// Is Hover: Is the user's mouse hovering over this button? aspect > 0, the window's width / height.
 bool Button::isHover(const Input& input, float aspect) {
     float mouse_u = input.inputMouseWindowU() * aspect;
     float mouse_v = input.inputMouseWindowV();
@@ -20,16 +22,19 @@ bool Button::isHover(const Input& input, float aspect) {
            mouse_v <= v_max;
 }
 
+// Is Held: Is the user's mouse holding this button? aspect > 0, the window's width / height.
 bool Button::isHeld(const Input& input, float aspect) {
     if (isHover(input, aspect) && input.inputMouseDown(MouseButton::left)) return true;
     return false;
 }
 
+// Is Released: Did the user's mouse release this button? aspect > 0, the window's width / height.
 bool Button::isReleased(const Input& input, float aspect) {
     if (isHover(input, aspect) && input.inputMouseReleased(MouseButton::left)) return true;
     return false;
 }
 
+// Process Input: Update this button's state from the user's mouse. aspect > 0, the window's width / height.
 void Button::processInput(const Input& input, float aspect) {
     if (isReleased(input, aspect)) m_state = ButtonState::Activated;
     if (isHeld(input, aspect)) m_state = ButtonState::Held;
@@ -37,6 +42,7 @@ void Button::processInput(const Input& input, float aspect) {
     else m_state = ButtonState::Idle;
 }
 
+// Build Primitives: Returns a single untextured quad covering this button.
 Primitive Button::buildPrimitives() {
     const float left = m_position.u - m_config.width;
     const float right = m_position.u + m_config.width;
@@ -52,6 +58,7 @@ Primitive Button::buildPrimitives() {
     return button_primitive;
 }
 
+// Textured Button: position: the button's center, in window UV units. style: the button's size, colors, and opacity. type: Square, Small, or Large. size: overwrites the height/width inside style.
 TexturedButton::TexturedButton(Vector2F position, ButtonConfig style, TexturedButtonType type, float size) {
     m_position = position;
     m_config = style;
@@ -59,6 +66,7 @@ TexturedButton::TexturedButton(Vector2F position, ButtonConfig style, TexturedBu
     m_size = size;
 }
 
+// Build Primitives (Textured): Returns a quad covering this button, textured with the font atlas region for its type.
 Primitive TexturedButton::buildPrimitives() {
     Primitive texture_button_primitive;
 

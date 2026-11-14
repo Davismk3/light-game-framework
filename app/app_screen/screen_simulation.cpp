@@ -7,8 +7,8 @@ void SimulationScreen::initialize() {
 
     Vector2F position = {0.0f, 0.0f};
     ButtonConfig style;
-    style.height = 0.04f;
-    style.width = 0.3f;
+    style.height = 0.06f;
+    style.width = 0.4f;
     style.held_color = {0.7f, 1.0f, 0.7f};
     style.hover_color = {0.85f, 0.85f, 0.85f};
     style.idle_color = {1.0f, 1.0f, 1.0f};
@@ -18,12 +18,13 @@ void SimulationScreen::initialize() {
 
     TextConfig text_style;
     text_style.size = 0.1f;
-    text_style.color = {1.0f, 1.0f, 1.0f};
+    text_style.color = {0.7f, 0.7f, 1.0f};
     text_style.positioning = TextPositioning::Centered;
     text_style.has_shadow = true;
-    text_style.shadow_color = {0.0f, 0.0f, 0.0f};
 
     m_menu.addText(Text({0.0f, 0.8f}, text_style, "Screen 2"));
+    text_style.size = 0.05f;
+    m_menu.addText(Text({0.0f, 0.0f}, text_style, "Click Me!"));
 
     m_menu.initialize();
     m_menu.buildMesh();
@@ -62,7 +63,7 @@ void SimulationScreen::render() {
 
     // Place Additional Simulation Render Logic Here:
 
-    drawClear(1.0f, 0.0f, 0.0f, 1.0f);
+    drawClear(0.2f, 0.1f, 0.0f, 1.0f);
     m_menu.draw();
 
     // -

@@ -1,5 +1,6 @@
 #include "primitive.hpp"
 
+// Quad: quad returns a primitive for four vertices.
 Primitive quad(
     const Vertex& vertex_a,
     const Vertex& vertex_b,
@@ -9,14 +10,7 @@ Primitive quad(
     return {{vertex_a, vertex_b, vertex_c, vertex_d}, {0, 1, 2, 0, 2, 3}};  // vertices and indices
 }
 
-void Primitive::setArtificialRGB(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
-    for (std::size_t i = 0; i < vertices.size(); ++i) {
-        vertices[i].artificial_r = r;
-        vertices[i].artificial_g = g;
-        vertices[i].artificial_b = b;
-    }
-}
-
+// Append Primitive: Take another primitive and combine it with this one.
 void Primitive::appendPrimitive(const Primitive& other) {
     const unsigned int base_index = static_cast<unsigned int>(vertices.size());
 
@@ -25,6 +19,7 @@ void Primitive::appendPrimitive(const Primitive& other) {
     for (unsigned int index : other.indices) indices.push_back(base_index + index);
 }
 
+// Clear Primitive: Clear this primitive's vertices and indices.
 void Primitive::clearPrimitive() {
     vertices.clear();
     indices.clear();

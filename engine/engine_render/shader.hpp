@@ -9,12 +9,14 @@
 #include <sstream>
 #include <iostream>
 
+// Color: Currently unused.
 enum class Color {
     red,
     blue,
     green
 };
 
+// Shader: A compiled and linked vertex and fragment shader program.
 class Shader {
 public:
     void shaderInitialize(const std::string& vertex_path, const std::string& fragment_path);
@@ -43,5 +45,7 @@ public:
     ~Shader();  // deletes GPU resource
     
 private:
-    unsigned int m_shader_id = 0;
+
+    // Program
+    unsigned int m_shader_id = 0;  // OpenGL program id, 0 when not initialized
 };

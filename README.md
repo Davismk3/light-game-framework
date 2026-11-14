@@ -6,24 +6,51 @@ I found myself struggling to scale game/other application projects, and also str
 
 As the developer, you should build your project in `app/`, and leave `engine/` largely untouched. 
 
-`README.md` was polished by AI. Note, this does NOT mean AI was used for any of the coding. 
+All source code was designed and written manually without AI.
+
+$${\color{red}\text{Centered red warning text}}$$
+${\color{#D9534F}\text{Custom\ shade\ of\ red}}$
+
 
 ## Examples
+
+### Available `app/`
+
+The currently available application in `app/` is the source code for a simple screen toggle using an on-screen button. How you (or your AI agent) build upon this is up to you!
+
+<table>
+  <tr>
+    <td><img src="assets/screen1.png" alt="screen1" width="600"></td>
+  </tr>
+</table>
+
+### Voxelverse 
 
 The following screenshots are taken from *Voxelverse*, a project of mine, which uses the same source code in `engine/` for its core. 
 
 Earth-like Terrain:
 
-<img src="assets/geology.png" alt="1" width="800" height="500">
-<img src="assets/meteorite.png" alt="1" width="800" height="500">
-<img src="assets/mountain_forest.png" alt="1" width="800" height="500">
+<table>
+  <tr>
+    <td rowspan="2"><img src="assets/geology.png" alt="Geology" width="600"></td>
+    <td><img src="assets/meteorite.png" alt="Meteorite" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/mountain_forest.png" alt="Mountain forest" width="300"></td>
+  </tr>
+</table>
 
 Otherworldly Terrain:
 
-<img src="assets/moon.png" alt="1" width="800" height="500">
-<img src="assets/red_planet.png" alt="1" width="800" height="500">
-<img src="assets/blue_planet.png" alt="1" width="800" height="500">
-
+<table>
+  <tr>
+    <td rowspan="2"><img src="assets/moon.png" alt="Moon" width="600"></td>
+    <td><img src="assets/red_planet.png" alt="Red planet" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/blue_planet.png" alt="Blue planet" width="300"></td>
+  </tr>
+</table>
 ## Requirements
 
 - GLFW
