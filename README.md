@@ -10,20 +10,41 @@ As the developer, you should build your project in `app/`, and leave `engine/` l
 
 ## Examples
 
+### Available `app/`
+
+<table>
+  <tr>
+    <td><img src="assets/screen1.png" alt="screen1" width="600"></td>
+  </tr>
+</table>
+
+### Voxelverse 
+
 The following screenshots are taken from *Voxelverse*, a project of mine, which uses the same source code in `engine/` for its core. 
 
 Earth-like Terrain:
 
-<img src="assets/geology.png" alt="1" width="800" height="500">
-<img src="assets/meteorite.png" alt="1" width="800" height="500">
-<img src="assets/mountain_forest.png" alt="1" width="800" height="500">
+<table>
+  <tr>
+    <td rowspan="2"><img src="assets/geology.png" alt="Geology" width="600"></td>
+    <td><img src="assets/meteorite.png" alt="Meteorite" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/mountain_forest.png" alt="Mountain forest" width="300"></td>
+  </tr>
+</table>
 
 Otherworldly Terrain:
 
-<img src="assets/moon.png" alt="1" width="800" height="500">
-<img src="assets/red_planet.png" alt="1" width="800" height="500">
-<img src="assets/blue_planet.png" alt="1" width="800" height="500">
-
+<table>
+  <tr>
+    <td rowspan="2"><img src="assets/moon.png" alt="Moon" width="600"></td>
+    <td><img src="assets/red_planet.png" alt="Red planet" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/blue_planet.png" alt="Blue planet" width="300"></td>
+  </tr>
+</table>
 ## Requirements
 
 - GLFW
