@@ -4,6 +4,7 @@
 #include "../engine_utility/vector.hpp"
 #include "../engine_utility/matrix.hpp"
 
+// Camera: A position, rotation, and projection used to build the view and projection matrices.
 class Camera {
 public:
     Camera();
@@ -17,9 +18,12 @@ public:
     Matrix4F viewMatrix() const;
     Matrix4F projectionMatrix() const;
 
-    Vector3F m_position;
-    QuaternionF m_rotation;
-    Matrix4F m_projection;
+    // Transform
+    Vector3F m_position;  // the eye of the view matrix
+    QuaternionF m_rotation;  // (w, i, j, k), identity looks down -z with +y up
+
+    // Projection
+    Matrix4F m_projection;  // set by perspective or orthographic
 
 private:
 

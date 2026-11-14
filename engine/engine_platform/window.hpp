@@ -8,13 +8,18 @@
 #include <iostream>
 #include <stdexcept>
 
+// GLFW Window: Forward declaration of GLFW's window type.
 struct GLFWwindow;
 
+// Framebuffer Extent: The size of a window's framebuffer.
 struct FramebufferExtent {
-    int width = 0;
-    int height = 0;
+
+    // Size
+    int width = 0;  // in pixels
+    int height = 0;  // in pixels
 };
 
+// Window: A GLFW window with an OpenGL context.
 class Window {
 public:
     void windowInitialize();
@@ -28,12 +33,16 @@ public:
     GLFWwindow* windowNativeHandle() const;
     bool windowConsumeFramebufferResize(FramebufferExtent& extent);
 
-    FramebufferExtent m_framebuffer_extent;
-    bool m_framebuffer_resized = false;
+    // Framebuffer
+    FramebufferExtent m_framebuffer_extent;  // latest framebuffer size, in pixels
+    bool m_framebuffer_resized = false;  // true until windowConsumeFramebufferResize reads the new size
 
-    float scrollX = 0.0f;
-    float scrollY = 0.0f;
+    // Scroll
+    float scrollX = 0.0f;  // horizontal scroll this frame, reset by windowPollEvents
+    float scrollY = 0.0f;  // vertical scroll this frame, reset by windowPollEvents
 
 private:
+
+    // Handle
     GLFWwindow* m_native_handle = nullptr;  // initialize as null pointer
 };

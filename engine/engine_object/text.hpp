@@ -14,69 +14,82 @@
 This script contains Text and Textbox objects. 
 */
 
-// Whether the text's start position is to the left, right, or center of the string.
+// Text Positioning: Whether the text's start position is to the left, right, or center of the string.
 enum class TextPositioning {
     LeftToRight,
     RightToLeft,
     Centered,
 };
 
-// State of the textbox.
+// Text Box State: The user's current interaction with a textbox.
 enum class TextBoxState {
     Idle, 
     Hover,
     Active
 };
 
-// Glyph UVs for the menu atlas.
+// Glyph Atlas Position UV: A glyph's upper left pixel in the font atlas.
 struct GlyphAtlasPositionUV {
-    int u;
-    int v;
+    
+    // Pixel
+    int u;  // pixels from the atlas's left edge
+    int v;  // pixels from the atlas's top edge
 };
 
-// Configurations for the text color, size, background, opacity, and positioning.
+// Text Config: Size, colors, background, opacity, and positioning of text.
 struct TextConfig {
-    float size;
-    Vector3F color = {0.0f, 0.0f, 0.0f};
-    TextPositioning positioning = TextPositioning::LeftToRight;  // the start position is now the center of the text display
-    Vector3F shadow_color = {0.0f, 0.0f, 0.0f};
-    bool has_shadow = false;
-    bool has_background = false;
-    Vector3F background_color = {0.0f, 0.0f, 0.0f};
-    float background_opacity = 1.0f;
-    float opacity = 1.0f;
+
+    // Attributes
+    float size;  // glyph height, in window UV units
+    Vector3F color = {0.0f, 0.0f, 0.0f};  // rgb ∈ [0.0f, 1.0f]
+    TextPositioning positioning = TextPositioning::LeftToRight;  // which part of the string the start position marks
+    Vector3F shadow_color = {0.0f, 0.0f, 0.0f};  // rgb ∈ [0.0f, 1.0f]
+    bool has_shadow = false;  // draws a shadow one glyph pixel down and to the right
+    bool has_background = false;  // draws an untextured quad behind the string
+    Vector3F background_color = {0.0f, 0.0f, 0.0f};  // rgb ∈ [0.0f, 1.0f]
+    float background_opacity = 1.0f;  // ∈ [0.0f, 1.0f]
+    float opacity = 1.0f;  // ∈ [0.0f, 1.0f]
 };
 
-// Configurations for the textbox colors, height/width, and opacity.
+// Text Box Config: Size, colors, and opacity of a textbox.
 struct TextBoxConfig {
-    float height;
-    float width;
-    Vector3F hover_color;
-    Vector3F idle_color;
-    Vector3F typing_color;
-    float opacity = 1.0f;
+
+    // Size
+    float height;  // half the box's height, in window UV units
+    float width;  // half the box's width, in window UV units
+
+    // Appearance
+    Vector3F hover_color;  // rgb ∈ [0.0f, 1.0f], also used while typing
+    Vector3F idle_color;  // rgb ∈ [0.0f, 1.0f]
+    Vector3F typing_color;  // currently unused
+    float opacity = 1.0f;  // ∈ [0.0f, 1.0f]
 };
 
-// Text object.
+// Text: A string drawn from the font atlas.
 struct Text {
     Text() = default;
     Text(Vector2F start_position, TextConfig style, std::string string);
 
-    std::string m_string;
-    char m_special_init = '\\';
-    float m_string_length = 0.0f;
+    // String
+    std::string m_string;  // stored as typed, special characters included
+    char m_special_init = '\\';  // starts a special character, e.g. "\1"
+    float m_string_length = 0.0f;  // drawn width in window UV units, set by buildPrimitives
 
+    // Position
     Vector2F m_start_position;  // normalized to ([-1, 1], [-1, 1]) for screen
-    Vector2F m_end_position = m_start_position;  // normalized to ([-1, 1], [-1, 1]) for screen
-    TextConfig m_config;
+    Vector2F m_end_position = m_start_position;  // normalized to ([-1, 1], [-1, 1]) for screen, moved forward by buildPrimitives
 
-    bool allows_special_characters = false;
-    bool follows_cursor = false;
+    // Config
+    TextConfig m_config;  // size, colors, background, opacity, and positioning
+
+    // Flags
+    bool allows_special_characters = false;  // currently unused
+    bool follows_cursor = false;  // shifts the text by the mouse position
 
     Primitive buildPrimitives();
 };
 
-// Textbox object.
+// Text Box: A box the user can click and type text into.
 class TextBox {
 public:
     TextBox() = default;
@@ -91,21 +104,26 @@ public:
     Primitive buildTextPrimitives();
     Primitive buildCursorPrimitives();
 
-    bool m_is_active = false;
-    bool m_text_changed = false;
-    bool m_state_just_changed = false;
+    // Flags
+    bool m_is_active = false;  // set on click, true while the user is typing
+    bool m_text_changed = false;  // true for the frame the string changes
+    bool m_state_just_changed = false;  // true for the frame the user clicks
 
-    Vector2F m_position;
-    TextBoxConfig m_config;
+    // Attributes
+    Vector2F m_position;  // center of the box, in window UV units
+    TextBoxConfig m_config;  // size, colors, and opacity
 
-    Text m_textbox_empty_text;
-    Text m_textbox_text;
-    Text m_textbox_cursor;
-    Text m_combined_current_text;
+    // Texts
+    Text m_textbox_empty_text;  // placeholder shown while empty and inactive
+    Text m_textbox_text;  // the user's typed string
+    Text m_textbox_cursor;  // the "<" cursor
+    Text m_combined_current_text;  // whichever of the empty or typed text is drawn
 
-    TextBoxState m_state = TextBoxState::Idle;
+    // State
+    TextBoxState m_state = TextBoxState::Idle;  // set each frame by processInput
 
-    bool m_string_at_max_length = false;
+    // Max Length
+    bool m_string_at_max_length = false;  // blocks typing once the text nearly fills the box
 };
 
 // Map for glyph to glyph ID.

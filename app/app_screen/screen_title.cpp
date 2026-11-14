@@ -7,8 +7,8 @@ void TitleScreen::initialize() {
 
     Vector2F position = {0.0f, 0.0f};
     ButtonConfig style;
-    style.height = 0.04f;
-    style.width = 0.3f;
+    style.height = 0.06f;
+    style.width = 0.4f;
     style.held_color = {0.7f, 1.0f, 0.7f};
     style.hover_color = {0.85f, 0.85f, 0.85f};
     style.idle_color = {1.0f, 1.0f, 1.0f};
@@ -18,11 +18,13 @@ void TitleScreen::initialize() {
 
     TextConfig text_style;
     text_style.size = 0.1f;
-    text_style.color = {1.0f, 1.0f, 1.0f};
+    text_style.color = {0.7f, 0.7f, 1.0f};
     text_style.positioning = TextPositioning::Centered;
     text_style.has_shadow = true;
 
     m_menu.addText(Text({0.0f, 0.8f}, text_style, "Screen 1"));
+    text_style.size = 0.05f;
+    m_menu.addText(Text({0.0f, 0.0f}, text_style, "Click Me!"));
 
     m_menu.initialize();
     m_menu.buildMesh();
@@ -61,7 +63,7 @@ void TitleScreen::render() {
     
     // Place Additional Title Render Logic Here:
 
-    drawClear(0.0f, 0.0f, 1.0f, 1.0f);
+    drawClear(0.0f, 0.1f, 0.2f, 1.0f);
     m_menu.draw();
 
     // -

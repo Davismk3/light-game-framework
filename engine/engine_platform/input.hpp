@@ -5,6 +5,7 @@
 #include <array>
 #include <GLFW/glfw3.h>
 
+// Mouse Button: The mouse buttons Input tracks.
 enum class MouseButton {
     left,
     middle,
@@ -12,6 +13,7 @@ enum class MouseButton {
     COUNT
 };
 
+// Key: The keyboard keys Input tracks. COUNT must stay last.
 enum class Key {
     A,
     B, 
@@ -74,6 +76,7 @@ enum class Key {
     COUNT
 };
 
+// Input: Tracks keyboard and mouse state from a window, updated once per frame.
 class Input {
 public:
     void inputAttachWindow(Window& window);
@@ -100,25 +103,33 @@ public:
     float getMouseScroll();
 
 private:
+
+    // Window
     GLFWwindow* m_window = nullptr;  // initialize as null pointer
 
-    static constexpr int KEY_COUNT = static_cast<int>(Key::COUNT);
-    static constexpr int MOUSE_BUTTON_COUNT = static_cast<int>(MouseButton::COUNT);
+    // Counts
+    static constexpr int KEY_COUNT = static_cast<int>(Key::COUNT);  // number of tracked keys
+    static constexpr int MOUSE_BUTTON_COUNT = static_cast<int>(MouseButton::COUNT);  // number of tracked mouse buttons
 
-    std::array<bool, KEY_COUNT> m_current_keys = {};
-    std::array<bool, KEY_COUNT> m_previous_keys = {};
+    // Keys
+    std::array<bool, KEY_COUNT> m_current_keys = {};  // down this frame, indexed by Key
+    std::array<bool, KEY_COUNT> m_previous_keys = {};  // down last frame, indexed by Key
 
-    std::array<bool, MOUSE_BUTTON_COUNT> m_current_mouse_buttons;
-    std::array<bool, MOUSE_BUTTON_COUNT> m_previous_mouse_buttons;
+    // Mouse Buttons
+    std::array<bool, MOUSE_BUTTON_COUNT> m_current_mouse_buttons;  // down this frame, indexed by MouseButton
+    std::array<bool, MOUSE_BUTTON_COUNT> m_previous_mouse_buttons;  // down last frame, indexed by MouseButton
 
-    double m_mouse_u = 0.0;
-    double m_mouse_v = 0.0;
-    double m_previous_mouse_u = 0.0;
-    double m_previous_mouse_v = 0.0;
+    // Mouse Position
+    double m_mouse_u = 0.0;  // pixels from the window's left edge
+    double m_mouse_v = 0.0;  // pixels from the window's top edge
+    double m_previous_mouse_u = 0.0;  // m_mouse_u last frame
+    double m_previous_mouse_v = 0.0;  // m_mouse_v last frame
 
-    float m_mouse_delta_u = 0.0f;
-    float m_mouse_delta_v = 0.0f;
+    // Mouse Delta
+    float m_mouse_delta_u = 0.0f;  // pixels moved right since last frame
+    float m_mouse_delta_v = 0.0f;  // pixels moved down since last frame
 
-    bool m_has_previous_mouse_position = false;
-    bool m_mouse_captured = false;
+    // Flags
+    bool m_has_previous_mouse_position = false;  // false until the first update, and after capture changes, so the delta does not jump
+    bool m_mouse_captured = false;  // true while the cursor is hidden and locked to the window
 };

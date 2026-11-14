@@ -4,9 +4,9 @@
 
 #include <utility>
 #include <stdexcept>
-#include <stdexcept>
 #include <glad/gl.h>
 
+// Mesh: Vertices and indices uploaded to the GPU and drawn through one VAO.
 class Mesh {
 public:
     Mesh() = default;  // needed since we define additional constructors below
@@ -25,15 +25,18 @@ public:
     Mesh(Mesh&& other) noexcept;
     Mesh& operator=(Mesh&& other) noexcept;
     
-    std::vector<Vertex> m_vertices;
-    std::vector<unsigned int> m_indices;
+    // CPU Geometry
+    std::vector<Vertex> m_vertices;  // emptied by meshUpload
+    std::vector<unsigned int> m_indices;  // emptied by meshUpload
 
-    unsigned int m_vertex_count = 0;
-    unsigned int m_index_count = 0;
+    // Counts
+    unsigned int m_vertex_count = 0;  // set by meshUpload
+    unsigned int m_index_count = 0;  // set by meshUpload, 0 draws without indices
 
-    unsigned int m_VAO = 0;
-    unsigned int m_VBO = 0;
-    unsigned int m_EBO = 0;
+    // GPU Handles
+    unsigned int m_VAO = 0;  // 0 when not uploaded
+    unsigned int m_VBO = 0;  // 0 when not uploaded
+    unsigned int m_EBO = 0;  // 0 when not uploaded or there are no indices
 
 private:
 

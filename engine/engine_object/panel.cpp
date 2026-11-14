@@ -1,5 +1,6 @@
 #include "panel.hpp"
 
+// Build Primitives: Returns nine quads from the font atlas: the center, four sides, and four corners. The border's thickness scales with pixel_size.
 Primitive Panel::buildPrimitives() {
     Primitive panel_primitive;
     // 9 quads total. 
@@ -12,7 +13,7 @@ Primitive Panel::buildPrimitives() {
     const float center_b = m_panel_config.center_position.v - m_panel_config.height;
     const float center_t = m_panel_config.center_position.v + m_panel_config.height;
     // - (texture coords)
-    float center_u0 = 110.0f / FONT_AXIS_WIDTH;        // upper left u pixel
+    float center_u0 = 111.0f / FONT_AXIS_WIDTH;        // upper left u pixel
     float center_v0 = 1.0f - 71.0f / FONT_AXIS_HEIGHT; // upper left v pixel
     float center_u1 = 121.0f / FONT_AXIS_WIDTH;        // lower right u pixel
     float center_v1 = 1.0f - 82.0f / FONT_AXIS_HEIGHT; // lower right v pixel
@@ -44,7 +45,7 @@ Primitive Panel::buildPrimitives() {
         {right_side_l, right_side_t, 0.0f, right_side_u0, right_side_v0}
     ));
 
-    // Left Side (screen coords)
+    // Left Side (screen coords) 
     float left_side_center_position_u = m_panel_config.center_position.u - m_panel_config.width;  // the side is skewed to the quad's side. not sure if this is the right factor
 
     const float left_side_l = left_side_center_position_u - m_panel_config.width * size * m_panel_config.height / 12.0f;  // the side is more narrow than the main quad by a factor of 5/12;
@@ -54,7 +55,7 @@ Primitive Panel::buildPrimitives() {
     // - (texture coords)
     float left_side_u0 = 85.0f / FONT_AXIS_WIDTH;        // upper left u pixel
     float left_side_v0 = 1.0f - 71.0f / FONT_AXIS_HEIGHT; // upper left v pixel
-    float left_side_u1 = 89.0f / FONT_AXIS_WIDTH;        // lower right u pixel
+    float left_side_u1 = 90.0f / FONT_AXIS_WIDTH;        // lower right u pixel
     float left_side_v1 = 1.0f - 82.0f / FONT_AXIS_HEIGHT; // lower right v pixel
     // -
     panel_primitive.appendPrimitive(quad(

@@ -1,12 +1,14 @@
 #include "context.hpp"
 
-void GraphicsContext::graphicsContextInitialize() {
+// Graphics Context Initialize: Enables depth testing and alpha blending. Call once after the OpenGL context is created.
+void graphicsContextInitialize() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void GraphicsContext::beginFrame() {
+// Begin Frame: Clears the color and depth buffers to black.
+void graphicsContextBeginFrame() {
     glDepthMask(GL_TRUE);
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
@@ -15,7 +17,8 @@ void GraphicsContext::beginFrame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void GraphicsContext::beginOpaquePass() {
+// Begin Opaque Pass: Depth test and depth writes on, blending off, back faces culled.
+void graphicsContextBeginOpaquePass() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);
@@ -27,7 +30,8 @@ void GraphicsContext::beginOpaquePass() {
     glFrontFace(GL_CCW);
 }
 
-void GraphicsContext::beginTranslucentPass() {
+// Begin Translucent Pass: Depth test on, depth writes off, blending on, no culling.
+void graphicsContextBeginTranslucentPass() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
@@ -41,7 +45,8 @@ void GraphicsContext::beginTranslucentPass() {
     glDisable(GL_CULL_FACE);
 }
 
-void GraphicsContext::beginTranslucentPassV2() {
+// Begin Translucent Pass V2: Depth test and depth writes on, blending on, back faces culled.
+void graphicsContextBeginTranslucentPassV2() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
@@ -57,7 +62,8 @@ void GraphicsContext::beginTranslucentPassV2() {
     glFrontFace(GL_CCW);
 }
 
-void GraphicsContext::beginTranslucentTwoPassA() {
+// Begin Translucent Two Pass A: Writes depth only, no color. Follow with beginTranslucentTwoPassB.
+void graphicsContextBeginTranslucentTwoPassA() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);
@@ -67,7 +73,8 @@ void GraphicsContext::beginTranslucentTwoPassA() {
     glDisable(GL_CULL_FACE);
 }
 
-void GraphicsContext::beginTranslucentTwoPassB() {
+// Begin Translucent Two Pass B: Draws color only where depth equals pass A's, with blending on and no culling.
+void graphicsContextBeginTranslucentTwoPassB() {
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_EQUAL);
@@ -77,7 +84,8 @@ void GraphicsContext::beginTranslucentTwoPassB() {
     glDisable(GL_CULL_FACE); // if water should be two-sided
 }
 
-void GraphicsContext::beginOverlayPass() {
+// Begin Overlay Pass: Depth test and depth writes off, blending on, no culling. Used for menus and the HUD.
+void graphicsContextBeginOverlayPass() {
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
 
@@ -88,11 +96,21 @@ void GraphicsContext::beginOverlayPass() {
     glDisable(GL_CULL_FACE);
 }
 
-void GraphicsContext::endFrame() {
+// Begin Reverse Projection Pass: Depth test passes for greater depth, and the clear depth is set to 0. Currently unused.
+void graphicsContextBeginReverseProjectionPass() {
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_GREATER);
+
+    glClearDepth(0.0f);
+}
+
+// End Frame: Currently empty.
+void graphicsContextEndFrame() {
     // possibly debug overlays
 }
 
-void GraphicsContext::resize(int width, int height) {
+// Resize: width, height, in pixels. Ignored if either is <= 0.
+void graphicsContextResize(int width, int height) {
     if (width <= 0 || height <= 0) return;
     glViewport(0, 0, width, height);
 }

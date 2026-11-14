@@ -2,23 +2,28 @@
 
 namespace {
 
+    // Clamp Value: Returns value limited to [lower, upper]. lower <= upper.
     template <typename T> T clampValue(const T& value, const T& lower, const T& upper) {
         return std::max(lower, std::min(value, upper));
     }
 }
 
+// Point Distance To Point: other_point: any point.
 double Point::pointDistanceToPoint(const Point& other_point) const {
     return Vector3D{x - other_point.x, y - other_point.y, z - other_point.z}.vectorMagnitude();
 }
 
+// Point Vector To Point: Returns the vector from this point to other_point. other_point: any point.
 Vector3D Point::pointVectorToPoint(const Point& other_point) const {
     return {other_point.x - x, other_point.y - y, other_point.z - z};
 }
 
+// Segment Length: Returns the distance between the endpoints.
 double Segment::segmentLength() const {
     return point_1.pointDistanceToPoint(point_2);
 }
 
+// Segment Midpoint: Returns the point halfway between the endpoints.
 Point Segment::segmetMidpoint() const {
     return {
         (point_1.x + point_2.x) / 2.0,
@@ -27,6 +32,7 @@ Point Segment::segmetMidpoint() const {
     };
 }
 
+// Point On Segment: True if point_3 is on the segment's line (cross product below 1e-8) and between its endpoints. point_3: any point.
 bool Segment::pointOnSegment(const Point& point_3) const {
     double eps = 1e-8;
     Vector3D vect_1 = point_1.pointVectorToPoint(point_2);
@@ -47,6 +53,7 @@ bool Segment::pointOnSegment(const Point& point_3) const {
     return false;
 }
 
+// Segment Intersects Segment: True if the closest points of the two segments are within 1e-8. other_segment: any segment, in 3D.
 bool Segment::segmentIntersectsSegment(const Segment& other_segment) const {
     constexpr double eps = 1e-8;
     constexpr double eps_squared = eps * eps;
@@ -98,6 +105,7 @@ bool Segment::segmentIntersectsSegment(const Segment& other_segment) const {
     return closest_1.pointDistanceToPoint(closest_2) <= eps;
 }
 
+// Segment Distance To Point: Returns the distance from point_3 to the nearest point on this segment. point_3: any point.
 double Segment::segmentDistanceToPoint(const Point& point_3) const {
     double eps = 1e-12;
     Vector3D vect_1 = point_1.pointVectorToPoint(point_2);
@@ -118,6 +126,7 @@ double Segment::segmentDistanceToPoint(const Point& point_3) const {
     return segment_point.pointDistanceToPoint(point_3);
 }
 
+// Nearest Point On This Segment: Returns the point on this segment nearest to other_point. other_point: any point.
 Point Segment::nearestPointOnThisSegment(const Point& other_point) {
     double eps = 1e-12;
     Vector3D vect_1 = point_1.pointVectorToPoint(point_2);
@@ -137,6 +146,7 @@ Point Segment::nearestPointOnThisSegment(const Point& other_point) {
     return segment_point;
 }
 
+// Polygon Normal: Returns the unit normal from the first three points, or {0, 0, 0} if there are fewer than 3 or they are in a line.
 Vector3D Polygon::polygonNormal() const {
     double eps = 1e-8;
 
@@ -155,6 +165,7 @@ Vector3D Polygon::polygonNormal() const {
     return {normal.x / normal_length, normal.y / normal_length, normal.z / normal_length};
 }
 
+// Polygon Is Valid: True if there are at least 3 points, the first three are not in a line, and every point is on their plane within 1e-8.
 bool Polygon::polygonIsValid() const {
     double eps = 1e-8;
     Vector3D norm = polygonNormal();
@@ -177,6 +188,7 @@ bool Polygon::polygonIsValid() const {
     return true;
 }
 
+// Polygon Perimeter: Returns the length around the closed border. With 2 points, returns their distance.
 double Polygon::polygonPerimeter() const {
     double perim = 0.0;
 
@@ -199,6 +211,7 @@ double Polygon::polygonPerimeter() const {
     return perim;
 }
 
+// Polygon Area: Returns 0 for fewer than 3 points. points: planar, in order around the border.
 double Polygon::polygonArea() const {
     if (points.size() < 3) {
         return 0.0;
@@ -215,6 +228,7 @@ double Polygon::polygonArea() const {
     return 0.5 * area_vector.vectorMagnitude();
 }
 
+// Polygon Segments: Returns each border edge, including the one from the last point back to the first. With 2 points, returns one segment.
 std::vector<Segment> Polygon::polygonSegments() const {
     std::vector<Segment> segments = {};
 
@@ -237,6 +251,7 @@ std::vector<Segment> Polygon::polygonSegments() const {
     return segments;
 }
 
+// Polygon Encloses Point: True if a ray from the point crosses the border an odd number of times. point: on the polygon's plane, within 1e-8.
 bool Polygon::polygonEnclosesPoint(const Point& point) const {
     double inf = 1e12;
     double eps = 1e-8;
@@ -272,6 +287,7 @@ bool Polygon::polygonEnclosesPoint(const Point& point) const {
     return intersection_count % 2 != 0;
 }
 
+// Polygon Border Distance To Point: Returns the distance from the point to the nearest border edge. point: any point. The polygon must have at least 2 points.
 double Polygon::polygonBorderDistanceToPoint(const Point& point) const {
     std::vector<Segment> segments = polygonSegments();
     std::vector<double> distances = {};
@@ -281,6 +297,7 @@ double Polygon::polygonBorderDistanceToPoint(const Point& point) const {
     return *std::min_element(distances.begin(), distances.end());
 }
 
+// Polygon Clip: Returns the part of the polygon on the kept side. It may have fewer than 3 points. clipping_plane: its normal points toward the kept side.
 Polygon Polygon::polygonClip(const Plane& clipping_plane) const {
     double eps = 1e-12;
     std::vector<Point> new_points = {};
@@ -340,6 +357,7 @@ Polygon Polygon::polygonClip(const Plane& clipping_plane) const {
     return Polygon{new_points};
 }
 
+// Polyhedron Clip: Returns the part on the kept side, closed with a new cap face where it was cut. clipping_plane: its normal points toward the kept side. The polyhedron must be convex.
 Polyhedron Polyhedron::polyhedronClip(const Plane& clipping_plane) {
     constexpr double eps = 1e-8;
     std::vector<Polygon> clipped_polygons;
@@ -432,6 +450,7 @@ Polyhedron Polyhedron::polyhedronClip(const Plane& clipping_plane) {
     return Polyhedron{clipped_polygons};
 }
 
+// Polyhedron Cross Section: Returns the polygon where the plane cuts the polyhedron, with points sorted around its center. It has fewer than 3 points if the plane misses. cross_section_plane: any plane. The polyhedron must be convex.
 Polygon Polyhedron::polyhedronCrossSection(const Plane& cross_section_plane) const {
     std::vector<Point> intersection_points = {};
     Point plane_point = cross_section_plane.plane_point;
