@@ -1,7 +1,7 @@
 #pragma once
 
 inline constexpr char ICON_PATH[] = "app/app_assets/textures/icon.png";
-inline constexpr char WINDOW_NAME[] = "Voxelverse v0.0.7.c";
+inline constexpr char WINDOW_NAME[] = "Application";
 
 inline constexpr int INIT_WINDOW_WIDTH = 800;
 inline constexpr int INIT_WINDOW_HEIGHT = 600;
