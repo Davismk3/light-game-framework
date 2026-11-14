@@ -12,6 +12,8 @@ As the developer, you should build your project in `app/`, and leave `engine/` l
 
 ### Available `app/`
 
+The currently available application in `app/` is the source code for a simple screen toggle using an on-screen button. How you (or your AI agent) build upon this is up to you!
+
 <table>
   <tr>
     <td><img src="assets/screen1.png" alt="screen1" width="600"></td>
